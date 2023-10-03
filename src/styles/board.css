@@ -1,0 +1,60 @@
+.board{
+    position: relative;
+    width: calc(64px * 8 + 65px);
+    height: calc(64px * 8 + 65px);
+    margin: 2em auto;
+    border: 2px solid rgb(130, 90, 88);
+    background-color: rgb(221, 176, 121);
+  }
+
+  .coord-top,
+  .coord-aside,
+  .coord-bottom{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  .coord-top,
+  .coord-bottom{
+    padding: 0 30px;
+  }
+  .coord-aside{
+    width: 30px;
+    height: calc(64px * 8);
+    padding: 0 .5px;
+    flex-direction: column-reverse;
+  }
+
+  .coord-top div, 
+  .coord-aside div,
+  .coord-bottom div{
+    width: 30px;
+    height: 30px;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  .field{
+    flex: 80% 1 1;
+    width: calc(64px * 8);
+    height: calc(64px * 8);
+    border: 2px solid rgb(130, 90, 88);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+
+  }
+
+  .cell{
+    width: 64px;
+    height: 64px;
+  }
+
+  .cell-black{
+    background-color: rgb(221, 176, 121);
+  }
+  .cell-white{
+    background-color: rgb(248, 222, 199);
+  }
