@@ -1,11 +1,6 @@
-interface ICellProps {
-  x: number
-  y: number
-  figure: string | null
-  color: 'white' | 'black'
-}
+import { Cell } from '../models/Cell'
 
-const CellComponent = ({ color }: ICellProps) => {
+const CellComponent = ({ color }: Cell) => {
   return <div className={['cell', color === 'white' ? 'cell-white' : 'cell-black'].join(' ')} />
 }
 
