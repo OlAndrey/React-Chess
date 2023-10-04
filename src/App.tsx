@@ -8,6 +8,7 @@ function App() {
   const restart = () => {
     const newBoard = new Board()
     newBoard.fill()
+    newBoard.getFigures()
     return newBoard
   }
 
