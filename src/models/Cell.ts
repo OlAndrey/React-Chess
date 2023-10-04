@@ -1,4 +1,5 @@
 import { Board } from './Board'
+import { Figure } from './figures/Figure'
 
 export class Cell {
   board: Board
@@ -6,7 +7,7 @@ export class Cell {
   x: number
   y: number
   color: 'white' | 'black'
-  figure: null
+  figure: Figure | null
   available: boolean
 
   constructor(board: Board, x: number, y: number, color: 'white' | 'black') {
