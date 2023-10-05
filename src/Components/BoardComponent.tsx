@@ -1,9 +1,37 @@
-import React from 'react'
+import React, { FC, useState } from 'react'
 import CellComponent from './CellComponent'
 import BoardHeader from './BoardHeader'
 import { Board } from '../models/Board'
+import { Cell } from '../models/Cell'
 
-const BoardComponent = ({ board }: { board: Board | null }) => {
+interface IBoardComponent {
+  board: Board | null
+  setBoard: (board: Board) => void
+}
+
+const BoardComponent: FC<IBoardComponent> = ({ board, setBoard }) => {
+  const [selected, setSelected] = useState<Cell | null>(null)
+
+  const handlerSelect = (cell: Cell) => {
+    if (board) {
+      setSelected(cell)
+      setBoard(board.copyBoard())
+    }
+  }
+
+  const handlerMove = (cell: Cell) => {
+    if (board) {
+      selected?.moveFigure(cell)
+      setSelected(null)
+      setBoard(board.copyBoard())
+    }
+  }
+
+  const handlerClick = (cell: Cell) => {
+    if (!selected && cell.figure) handlerSelect(cell)
+    else handlerMove(cell)
+  }
+
   return (
     <div>
       {board ? (
@@ -12,7 +40,12 @@ const BoardComponent = ({ board }: { board: Board | null }) => {
             {board.cells.map((row, index) => (
               <React.Fragment key={index}>
                 {row.map((cell) => (
-                  <CellComponent key={cell.id} {...cell} />
+                  <CellComponent
+                    key={cell.id}
+                    selected={selected}
+                    click={handlerClick}
+                    cell={cell}
+                  />
                 ))}
               </React.Fragment>
             ))}
