@@ -66,4 +66,11 @@ export class Board {
     return this.cells[x][y]
   }
 
+  highlightCells(selected: Cell | null) {
+    for (let x = 0; x < this.cells.length; x++) {
+      for (let y = 0; y < this.cells[x].length; y++) {
+        this.cells[x][y].available = !!selected?.figure?.canMove(this.cells[x][y])
+      }
+    }
+  }
 }

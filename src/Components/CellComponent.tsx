@@ -8,16 +8,18 @@ interface ICellProps {
 }
 
 const CellComponent = ({ cell, click, selected }: ICellProps) => {
-  const { color, figure } = cell
+  const { available, color, figure } = cell
   return (
     <div
       className={[
         'cell',
         color === 'white' ? 'cell-white' : 'cell-black',
-        selected === cell ? 'cell-selected' : ''
+        selected === cell ? 'cell-selected' : '',
+        available ? 'cell-available' : ''
       ].join(' ')}
       onClick={() => click(cell)}
     >
+      {available && !figure && <div />}
       {figure && <FigureComponent {...figure} />}
     </div>
   )

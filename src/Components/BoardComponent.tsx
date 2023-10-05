@@ -15,6 +15,7 @@ const BoardComponent: FC<IBoardComponent> = ({ board, setBoard }) => {
   const handlerSelect = (cell: Cell) => {
     if (board) {
       setSelected(cell)
+      board.highlightCells(cell)
       setBoard(board.copyBoard())
     }
   }
@@ -23,6 +24,7 @@ const BoardComponent: FC<IBoardComponent> = ({ board, setBoard }) => {
     if (board) {
       selected?.moveFigure(cell)
       setSelected(null)
+      board.highlightCells(null)
       setBoard(board.copyBoard())
     }
   }
