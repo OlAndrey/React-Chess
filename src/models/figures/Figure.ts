@@ -13,12 +13,14 @@ export enum FigureNames {
 
 export class Figure {
   name: FigureNames
+  isFirstStep: boolean
   cell: Cell
   logo: typeof logoImg | null
   color: 'white' | 'black'
 
   constructor(cell: Cell, color: 'white' | 'black') {
     this.name = FigureNames.FIGURE
+    this.isFirstStep = true
     this.cell = cell
     this.cell.figure = this
     this.logo = null

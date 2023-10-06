@@ -65,6 +65,7 @@ export class Cell {
   setFigure(figure: Figure) {
     this.figure = figure
     this.figure.cell = this
+    this.figure.isFirstStep = false
   }
 
   moveFigure(target: Cell) {
