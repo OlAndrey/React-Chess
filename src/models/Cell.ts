@@ -46,6 +46,22 @@ export class Cell {
     return true
   }
 
+  emptyDiagonal(target: Cell): boolean {
+    const absX = Math.abs(target.x - this.x)
+    const absY = Math.abs(target.y - this.y)
+
+    if (absX !== absY) return false
+
+    const dx = this.x < target.x ? 1 : -1
+    const dy = this.y < target.y ? 1 : -1
+
+    for (let i = 1; i < absY; i++) {
+      if (this.board.getCell(this.x + dx * i, this.y + dy * i).figure) return false
+    }
+
+    return true
+  }
+
   setFigure(figure: Figure) {
     this.figure = figure
     this.figure.cell = this
