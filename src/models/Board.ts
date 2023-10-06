@@ -53,10 +53,6 @@ export class Board {
         this.cells[0][y].figure = new King(this.cells[0][y], 'black')
         this.cells[7][y].figure = new King(this.cells[7][y], 'white')
       }
-      if (y === 0 || y === 7) {
-        this.cells[0][y].figure = new Rook(this.cells[0][y], 'black')
-        this.cells[7][y].figure = new Rook(this.cells[7][y], 'white')
-      }
       this.cells[1][y].figure = new Pawn(this.cells[1][y], 'black')
       this.cells[6][y].figure = new Pawn(this.cells[6][y], 'white')
     }

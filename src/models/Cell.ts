@@ -1,5 +1,5 @@
 import { Board } from './Board'
-import { Figure } from './figures/Figure'
+import { Figure, FigureNames } from './figures/Figure'
 
 export class Cell {
   board: Board
@@ -18,6 +18,32 @@ export class Cell {
     this.figure = null
     this.available = false
     this.id = Math.random()
+  }
+
+  emptyVertical(target: Cell): boolean {
+    if (target.x !== this.x) return false
+
+    const min = Math.min(this.y, target.y)
+    const max = Math.max(this.y, target.y)
+
+    for (let i = min + 1; i < max; i++) {
+      if (this.board.getCell(this.x, i).figure) return false
+    }
+
+    return true
+  }
+
+  emptyHorizontal(target: Cell): boolean {
+    if (target.y !== this.y) return false
+
+    const min = Math.min(this.x, target.x)
+    const max = Math.max(this.x, target.x)
+
+    for (let i = min + 1; i < max; i++) {
+      if (this.board.getCell(i, this.y).figure) return false
+    }
+
+    return true
   }
 
   setFigure(figure: Figure) {
