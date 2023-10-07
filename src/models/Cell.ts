@@ -70,6 +70,11 @@ export class Cell {
 
   moveFigure(target: Cell) {
     if (this.figure && this.figure.canMove(target)) {
+      if (this.figure.name === FigureNames.KING && Math.abs(target.y - this.y) === 2) {
+        const y = this.y < target.y ? 7 : 0
+        const dy = this.y < target.y ? 1 : -1
+        this.board.getCell(this.x, y).moveFigure(this.board.getCell(this.x, this.y + dy))
+      }
       target.setFigure(this.figure)
       this.figure = null
     }
