@@ -1,3 +1,4 @@
+import classNames from 'classnames'
 import FigureComponent from './FigureComponent'
 import { Cell } from '../models/Cell'
 
@@ -9,14 +10,16 @@ interface ICellProps {
 
 const CellComponent = ({ cell, click, selected }: ICellProps) => {
   const { available, color, figure } = cell
+  const cellComponentClasses = 'cell ' + (color === 'white' ? 'cell-white' : 'cell-black')
+
   return (
     <div
-      className={[
-        'cell',
-        color === 'white' ? 'cell-white' : 'cell-black',
-        selected === cell ? 'cell-selected' : '',
-        available ? 'cell-available' : ''
-      ].join(' ')}
+      className={
+        classNames(cellComponentClasses, {
+          'cell-selected': selected === cell,
+          'cell-available': available
+        })
+      }
       onClick={() => click(cell)}
     >
       {available && !figure && <div />}
