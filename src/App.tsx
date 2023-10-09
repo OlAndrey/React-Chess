@@ -29,13 +29,21 @@ function App() {
     setBoard(restart())
   }, [])
 
+  useEffect(() => {
+    if (board && currentPlayer?.color) {
+      board.checkCapture(currentPlayer.color)
+      setBoard(board.copyBoard())
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPlayer])
+
   return (
-    <BoardComponent
-      board={board}
-      setBoard={setBoard}
-      currentPlayer={currentPlayer}
-      changePlayer={changePlayer}
-    />
+      <BoardComponent
+        board={board}
+        setBoard={setBoard}
+        currentPlayer={currentPlayer}
+        changePlayer={changePlayer}
+      />
   )
 }
 

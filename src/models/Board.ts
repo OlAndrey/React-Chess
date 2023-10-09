@@ -8,14 +8,17 @@ import { Rook } from './figures/Rook'
 
 export class Board {
   cells: Array<Cell[]>
+  kingPositions: Cell[]
 
   constructor() {
     this.cells = []
+    this.kingPositions = []
   }
 
   copyBoard() {
     const newBoard = new Board()
     newBoard.cells = this.cells
+    newBoard.kingPositions = this.kingPositions
     return newBoard
   }
 
@@ -52,21 +55,29 @@ export class Board {
       if (y === 4) {
         this.cells[0][y].figure = new King(this.cells[0][y], 'black')
         this.cells[7][y].figure = new King(this.cells[7][y], 'white')
+        this.kingPositions = [this.cells[7][y], this.cells[0][y]]
       }
       this.cells[1][y].figure = new Pawn(this.cells[1][y], 'black')
       this.cells[6][y].figure = new Pawn(this.cells[6][y], 'white')
     }
   }
 
-  getCell(x: number, y: number): Cell{
+  getCell(x: number, y: number): Cell {
     return this.cells[x][y]
   }
 
   highlightCells(selected: Cell | null) {
+    const figure = selected?.figure
     for (let x = 0; x < this.cells.length; x++) {
       for (let y = 0; y < this.cells[x].length; y++) {
-        this.cells[x][y].available = !!selected?.figure?.canMove(this.cells[x][y])
+        const cell = this.cells[x][y]
+        cell.available = !!figure?.canMove(cell)
       }
     }
+  }
+
+  checkCapture(color: 'white' | 'black') {
+    const kingPosition = color === 'white' ? this.kingPositions[0] : this.kingPositions[1]
+    kingPosition.capture = kingPosition.cellCapture()
   }
 }

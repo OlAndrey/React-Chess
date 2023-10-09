@@ -26,11 +26,12 @@ export class King extends Figure {
 
   canMove(target: Cell): boolean {
     if (!super.canMove(target)) return false
-
+    if(this.cell === target) return false
+    if (target.cellCapture(this.color)) return false
     const absX = Math.abs(target.x - this.cell.x)
     const absY = Math.abs(target.y - this.cell.y)
 
-    if (this.isFirstStep && absX === 0 && absY === 2)
+    if (this.isFirstStep && !this.cell.capture && absX === 0 && absY === 2)
       if (this.canMoveWithFirstStep(target)) return true
 
     if (absX <= 1 && absY <= 1) return true

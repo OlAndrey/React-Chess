@@ -14,12 +14,11 @@ const CellComponent = ({ cell, click, selected }: ICellProps) => {
 
   return (
     <div
-      className={
-        classNames(cellComponentClasses, {
-          'cell-selected': selected === cell,
-          'cell-available': available
-        })
-      }
+      className={classNames(cellComponentClasses, {
+        'cell-selected': selected === cell,
+        'cell-available': available,
+        'cell-capture': cell.capture && selected !== cell
+      })}
       onClick={() => click(cell)}
     >
       {available && !figure && <div />}

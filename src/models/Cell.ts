@@ -9,6 +9,7 @@ export class Cell {
   readonly color: 'white' | 'black'
   figure: Figure | null
   available: boolean
+  capture: boolean
 
   constructor(board: Board, x: number, y: number, color: 'white' | 'black') {
     this.board = board
@@ -17,6 +18,7 @@ export class Cell {
     this.color = color
     this.figure = null
     this.available = false
+    this.capture = false
     this.id = Math.random()
   }
 
@@ -62,21 +64,52 @@ export class Cell {
     return true
   }
 
+  cellCapture(color?: 'white' | 'black') {
+    const cells = this.board.cells
+    for (let x = 0; x < cells.length; x++) {
+      for (let y = 0; y < cells[x].length; y++) {
+        if (!color || (color && color !== cells[x][y].figure?.color))
+          if (cells[x][y].figure?.name !== FigureNames.KING)
+            if (!!cells[x][y]?.figure?.canMove(this)) return true
+      }
+    }
+
+    return false
+  }
+
   setFigure(figure: Figure) {
     this.figure = figure
     this.figure.cell = this
     this.figure.isFirstStep = false
   }
 
-  moveFigure(target: Cell) {
+  moveFigure(target: Cell): boolean {
     if (this.figure && this.figure.canMove(target)) {
-      if (this.figure.name === FigureNames.KING && Math.abs(target.y - this.y) === 2) {
-        const y = this.y < target.y ? 7 : 0
-        const dy = this.y < target.y ? 1 : -1
-        this.board.getCell(this.x, y).moveFigure(this.board.getCell(this.x, this.y + dy))
+      const color = this.figure.color
+
+      if (this.figure.name === FigureNames.KING && !target.cellCapture(color)) {
+        if (!this.capture && Math.abs(target.y - this.y) === 2) {
+          const y = this.y < target.y ? 7 : 0
+          const dy = this.y < target.y ? 1 : -1
+          this.board.getCell(this.x, y).moveFigure(this.board.getCell(this.x, this.y + dy))
+          target.setFigure(this.figure)
+          this.figure = null
+          return true
+        }
+        if (this.capture) {
+          const index = color === 'white' ? 0 : 1
+          target.setFigure(this.figure)
+          this.figure = null
+          this.capture = false
+          this.board.kingPositions[index] = target
+          return true
+        }
+      } else {
+        target.setFigure(this.figure)
+        this.figure = null
+        return true
       }
-      target.setFigure(this.figure)
-      this.figure = null
     }
+    return false
   }
 }
