@@ -32,4 +32,23 @@ export class Figure {
 
     return true
   }
+
+  isKingSave(target: Cell): boolean {
+    if (this.cell === target) return false
+    if (this.name === FigureNames.KING) return !target.cellCapture(this.color)
+
+    const { x, y } = this.cell
+    const targetFigure = target.figure
+    target.figure = this
+    target.figure.cell = this.cell.board.getCell(x, y)
+    this.cell.figure = null
+    const flag = !this.cell.board.canCaptureKing(this.color)
+    if (target.figure) {
+      this.cell.figure = target.figure
+      this.cell.figure.cell = this.cell
+      target.figure = targetFigure
+    }
+
+    return flag
+  }
 }

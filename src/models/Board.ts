@@ -71,13 +71,19 @@ export class Board {
     for (let x = 0; x < this.cells.length; x++) {
       for (let y = 0; y < this.cells[x].length; y++) {
         const cell = this.cells[x][y]
-        cell.available = !!figure?.canMove(cell)
+        cell.available = !!figure?.canMove(cell) && !!figure?.isKingSave(cell)
       }
     }
   }
 
   checkCapture(color: 'white' | 'black') {
     const kingPosition = color === 'white' ? this.kingPositions[0] : this.kingPositions[1]
-    kingPosition.capture = kingPosition.cellCapture()
+    kingPosition.capture = this.canCaptureKing(color)
+  }
+
+  canCaptureKing(color: 'white' | 'black'): boolean {
+    const kingPosition = color === 'white' ? this.kingPositions[0] : this.kingPositions[1]
+
+    return kingPosition.cellCapture()
   }
 }

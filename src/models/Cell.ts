@@ -85,31 +85,49 @@ export class Cell {
 
   moveFigure(target: Cell): boolean {
     if (this.figure && this.figure.canMove(target)) {
+      // checking whether a figure is located and whether it is possible to make a move
+      if (target.figure?.name === FigureNames.KING) return false
       const color = this.figure.color
+      const index = color === 'white' ? 0 : 1
 
       if (this.figure.name === FigureNames.KING && !target.cellCapture(color)) {
+        // if the piece is king then check whether the cell is under attack
+        target.setFigure(this.figure)
+        this.figure = null
+        this.capture = false
+        this.board.kingPositions[index] = target
+
         if (!this.capture && Math.abs(target.y - this.y) === 2) {
+          // checking castling possibility
           const y = this.y < target.y ? 7 : 0
           const dy = this.y < target.y ? 1 : -1
           this.board.getCell(this.x, y).moveFigure(this.board.getCell(this.x, this.y + dy))
-          target.setFigure(this.figure)
-          this.figure = null
           return true
-        }
-        if (this.capture) {
-          const index = color === 'white' ? 0 : 1
-          target.setFigure(this.figure)
-          this.figure = null
-          this.capture = false
-          this.board.kingPositions[index] = target
-          return true
+        } else {
+          if (!this.board.canCaptureKing(color)) return true
+          if (target?.figure) {
+            this.setFigure(target.figure)
+            target.figure = null
+          }
+          return false
         }
       } else {
+        const targetFigure = target.figure
         target.setFigure(this.figure)
         this.figure = null
-        return true
+        if (!this.board.canCaptureKing(color)) {
+          this.board.kingPositions[index].capture = false
+          return true
+        }
+        if (target?.figure) {
+          // canceling a figure's movement if it threatens the king
+          this.setFigure(target.figure)
+          target.figure = targetFigure
+          return false
+        }
       }
     }
+
     return false
   }
 }
