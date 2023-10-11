@@ -1,0 +1,26 @@
+.app{
+    display: flex;
+    padding: 3em 1em 0 1em;
+    gap: 2em;
+}
+
+.info{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.player{
+    width: 7.5em;
+    padding: 1em;
+    text-align: center;
+}
+
+.player-active{
+    font-weight: 700;
+}
+.player img{
+    width: 100%;
+    height: auto;
+}

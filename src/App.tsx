@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import BoardComponent from './Components/BoardComponent'
+import InfoGame from './Components/InfoGame'
 import { Board } from './models/Board'
 import { Player } from './models/Player'
 
@@ -17,6 +18,7 @@ function App() {
     const newBoard = new Board()
     newBoard.fill()
     newBoard.getFigures()
+    setBoard(newBoard)
     return newBoard
   }
 
@@ -26,7 +28,7 @@ function App() {
   }
 
   useEffect(() => {
-    setBoard(restart())
+    restart()
   }, [])
 
   useEffect(() => {
@@ -34,16 +36,19 @@ function App() {
       board.checkCapture(currentPlayer.color)
       setBoard(board.copyBoard())
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPlayer])
 
   return (
+    <div className='app'>
+      <InfoGame player={currentPlayer} time={300} />
       <BoardComponent
         board={board}
         setBoard={setBoard}
         currentPlayer={currentPlayer}
         changePlayer={changePlayer}
       />
+    </div>
   )
 }
 

@@ -2,7 +2,7 @@
     position: relative;
     width: calc(64px * 8 + 65px);
     height: calc(64px * 8 + 65px);
-    margin: 2em auto;
+    /* margin: 2em auto; */
     border: 2px solid rgb(130, 90, 88);
     background-color: rgb(221, 176, 121);
   }

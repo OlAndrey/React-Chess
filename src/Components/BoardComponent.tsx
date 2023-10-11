@@ -38,7 +38,7 @@ const BoardComponent: FC<IBoardComponent> = ({ board, setBoard, changePlayer, cu
   }
 
   return (
-    <div>
+    <>
       {board ? (
         <div className="board">
           <BoardHeader>
@@ -59,7 +59,7 @@ const BoardComponent: FC<IBoardComponent> = ({ board, setBoard, changePlayer, cu
       ) : (
         'Loading board...'
       )}
-    </div>
+    </>
   )
 }
 
