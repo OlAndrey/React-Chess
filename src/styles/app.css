@@ -11,6 +11,25 @@
     align-items: center;
 }
 
+.button {
+	display: inline-block;
+	background: linear-gradient(to bottom, #3d94f6 5%, #1e62d0 100%);
+	border-radius: .4em;
+	border: 1px solid #337fed;
+	cursor: pointer;
+	color: #ffffff;
+	padding: 6px 24px;
+	text-decoration: none;
+}
+.button:hover {
+	background: linear-gradient(to bottom, #1e62d0 5%, #3d94f6 100%);
+	background-color: #1e62d0;
+}
+.button:active {
+	position: relative;
+	top: 1px;
+}
+
 .player{
     width: 7.5em;
     padding: 1em;

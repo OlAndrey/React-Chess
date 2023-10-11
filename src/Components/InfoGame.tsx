@@ -7,9 +7,10 @@ import blackPlayerIcon from '../Icons/Black_King.svg'
 interface IInfoGameProps {
   time: number
   player: Player | null
+  handler: () => void
 }
 
-const InfoGame: FC<IInfoGameProps> = ({ player, time }) => {
+const InfoGame: FC<IInfoGameProps> = ({ player, time, handler }) => {
   const [blackTime, setBlackTime] = useState(time)
   const [whiteTime, setWhiteTime] = useState(time)
   const timer = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -45,6 +46,13 @@ const InfoGame: FC<IInfoGameProps> = ({ player, time }) => {
   return (
     <div className="info">
       <PlayerInfo color="black" isActive={player?.color === 'black'} time={blackTime} />
+
+      <div>
+        <button className="button" onClick={handler}>
+          Restart
+        </button>
+      </div>
+
       <PlayerInfo color="white" isActive={player?.color === 'white'} time={whiteTime} />
     </div>
   )
