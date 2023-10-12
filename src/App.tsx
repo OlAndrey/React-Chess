@@ -30,13 +30,13 @@ function App() {
 
   useEffect(() => {
     if (board && currentPlayer?.color) {
-      board.checkCapture(currentPlayer.color)
+      board.calculateAllMoves(currentPlayer.color)
       setBoard(board.copyBoard())
     }
   }, [currentPlayer])
 
   return (
-    <div className='app'>
+    <div className="app">
       <InfoGame player={currentPlayer} handler={restart} time={300} />
       <BoardComponent
         board={board}

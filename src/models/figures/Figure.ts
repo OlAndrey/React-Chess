@@ -17,6 +17,7 @@ export class Figure {
   cell: Cell
   logo: typeof logoImg | null
   color: 'white' | 'black'
+  possibleMoves: Cell[]
 
   constructor(cell: Cell, color: 'white' | 'black') {
     this.name = FigureNames.FIGURE
@@ -25,6 +26,17 @@ export class Figure {
     this.cell.figure = this
     this.logo = null
     this.color = color
+    this.possibleMoves = []
+  }
+
+  calculateMoves() {
+    const board = this.cell.board
+    for (let x = 0; x < board.cells.length; x++) {
+      for (let y = 0; y < board.cells[x].length; y++) {
+        const cell = board.cells[x][y]
+        if (!!this.canMove(cell) && !!this.isKingSave(cell)) this.possibleMoves?.push(cell)
+      }
+    }
   }
 
   canMove(target: Cell): boolean {

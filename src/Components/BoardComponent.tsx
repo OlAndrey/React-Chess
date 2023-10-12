@@ -16,18 +16,13 @@ const BoardComponent: FC<IBoardComponent> = ({ board, setBoard, changePlayer, cu
   const [selected, setSelected] = useState<Cell | null>(null)
 
   const handlerSelect = (cell: Cell) => {
-    if (board && cell.figure?.color === currentPlayer?.color) {
-      setSelected(cell)
-      board.highlightCells(cell)
-      setBoard(board.copyBoard())
-    }
+    if (board && cell.figure?.color === currentPlayer?.color) setSelected(cell)
   }
 
   const handlerMove = (cell: Cell) => {
     if (board && selected?.moveFigure(cell)) {
       changePlayer()
       setSelected(null)
-      board.highlightCells(null)
       setBoard(board.copyBoard())
     }
   }

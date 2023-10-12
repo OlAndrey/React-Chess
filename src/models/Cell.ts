@@ -8,7 +8,6 @@ export class Cell {
   readonly y: number
   readonly color: 'white' | 'black'
   figure: Figure | null
-  available: boolean
   capture: boolean
 
   constructor(board: Board, x: number, y: number, color: 'white' | 'black') {
@@ -17,7 +16,6 @@ export class Cell {
     this.y = y
     this.color = color
     this.figure = null
-    this.available = false
     this.capture = false
     this.id = Math.random()
   }
@@ -64,11 +62,11 @@ export class Cell {
     return true
   }
 
-  cellCapture(color?: 'white' | 'black') {
+  cellCapture(color: 'white' | 'black') {
     const cells = this.board.cells
     for (let x = 0; x < cells.length; x++) {
       for (let y = 0; y < cells[x].length; y++) {
-        if (!color || (color && color !== cells[x][y].figure?.color))
+        if (color !== cells[x][y].figure?.color)
           if (cells[x][y].figure?.name !== FigureNames.KING)
             if (!!cells[x][y]?.figure?.canMove(this)) return true
       }
@@ -84,7 +82,7 @@ export class Cell {
   }
 
   moveFigure(target: Cell): boolean {
-    if (this.figure && this.figure.canMove(target)) {
+    if (this.figure && this.figure.possibleMoves.includes(target)) {
       // checking whether a figure is located and whether it is possible to make a move
       if (target.figure?.name === FigureNames.KING) return false
       const color = this.figure.color

@@ -9,7 +9,8 @@ interface ICellProps {
 }
 
 const CellComponent = ({ cell, click, selected }: ICellProps) => {
-  const { available, color, figure } = cell
+  const { color, figure } = cell
+  const available = selected?.figure?.possibleMoves.includes(cell)
   const cellComponentClasses = 'cell ' + (color === 'white' ? 'cell-white' : 'cell-black')
 
   return (
