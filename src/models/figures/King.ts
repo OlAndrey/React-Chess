@@ -26,8 +26,19 @@ export class King extends Figure {
 
   canMove(target: Cell): boolean {
     if (!super.canMove(target)) return false
-    if(this.cell === target) return false
+    if (this.cell === target) return false
     if (target.cellCapture(this.color)) return false
+
+    /* Сhecking whether the cell is under attack by the enemy king */
+    const kingPositions = this.cell.board.kingPositions
+    const positionOpponentKing = this.color !== 'white' ? kingPositions[0] : kingPositions[1]
+
+    const absDiffX = Math.abs(target.x - positionOpponentKing.x)
+    const absDiffY = Math.abs(target.y - positionOpponentKing.y)
+
+    if (absDiffX <= 1 && absDiffY <= 1) return false
+    /* ----------------------------------------------------------- */
+
     const absX = Math.abs(target.x - this.cell.x)
     const absY = Math.abs(target.y - this.cell.y)
 

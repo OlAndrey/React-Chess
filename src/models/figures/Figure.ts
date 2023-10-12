@@ -47,7 +47,13 @@ export class Figure {
 
   isKingSave(target: Cell): boolean {
     if (this.cell === target) return false
-    if (this.name === FigureNames.KING) return !target.cellCapture(this.color)
+    if (this.name === FigureNames.KING) {
+      const targetFigure = target.figure
+      target.figure = null
+      const cellCapture = target.cellCapture(this.color)
+      target.figure = targetFigure
+      return !cellCapture
+    }
 
     const { x, y } = this.cell
     const targetFigure = target.figure
