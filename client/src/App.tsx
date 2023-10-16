@@ -1,57 +1,18 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useRef, useState } from 'react'
-import BoardComponent from './Components/BoardComponent'
-import InfoGame from './Components/InfoGame'
-import { Board } from './models/Board'
-import { Player } from './models/Player'
+import { MutableRefObject, useRef, useState } from 'react'
+import Modal from './Components/Modal'
 
 function App() {
-  const isFirstMove = useRef(true)
-  const [board, setBoard] = useState<Board | null>(null)
-  const [whitePlayer] = useState<Player>(new Player('white'))
-  const [blackPlayer] = useState<Player>(new Player('black'))
-  const [currentPlayer, setCurrentPlayer] = useState<Player | null>(null)
-
-  const restart = () => {
-    setCurrentPlayer(whitePlayer)
-    isFirstMove.current = true
-    const newBoard = new Board()
-    newBoard.fill()
-    newBoard.getFigures()
-    setBoard(newBoard)
-  }
-
-  const changePlayer = () => {
-    const player = currentPlayer === whitePlayer ? blackPlayer : whitePlayer
-    setCurrentPlayer(player)
-  }
-
-  useEffect(() => {
-    restart()
-  }, [])
-
-  useEffect(() => {
-    if (currentPlayer?.color && !isFirstMove.current) board?.checkMate(currentPlayer.color)
-  }, [board])
-
-  useEffect(() => {
-    if (board && currentPlayer?.color) {
-      if (isFirstMove.current) isFirstMove.current = false
-      board.calculateAllMoves(currentPlayer.color)
-      setBoard(board.copyBoard())
-    }
-  }, [currentPlayer])
+  const [showModal] = useState(true)
+  const inputRef = useRef() as MutableRefObject<HTMLInputElement>
 
   return (
-    <div className="app">
-      <InfoGame player={currentPlayer} handler={restart} time={300} />
-      <BoardComponent
-        board={board}
-        setBoard={setBoard}
-        currentPlayer={currentPlayer}
-        changePlayer={changePlayer}
-      />
-    </div>
+    <Modal className={showModal ? 'bg-image' : ''} isShow={showModal}>
+      <input type="text" ref={inputRef} placeholder="Enter game id" />
+      <button className="btn" onClick={() => console.log('clicked!')}>
+        Connect
+      </button>
+    </Modal>
   )
 }
 
