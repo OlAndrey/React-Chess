@@ -1,3 +1,6 @@
+@import url("./app.css");
+@import url("./board.css");
+
 html,
 body{
   padding: 0;

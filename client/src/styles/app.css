@@ -1,5 +1,6 @@
 .app{
     display: flex;
+    justify-content: center;
     padding: 3em 1em 0 1em;
     gap: 2em;
 }
