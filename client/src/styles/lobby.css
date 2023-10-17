@@ -1,0 +1,26 @@
+.lpoll{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    grid-gap: 9px;
+    padding: .5em 0;
+}
+.lpoll>div {
+    flex: 25% 1 1;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border: 1px solid #404040;
+    border-radius: 3px;
+    color: #161512;
+    transition: all 150ms;
+}
+.lpoll .clock{
+    display: block;
+    font-size: 1.35em;
+    line-height: 1.5em;
+    letter-spacing: .1em;
+}

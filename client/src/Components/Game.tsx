@@ -1,14 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { MutableRefObject, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import BoardComponent from './BoardComponent'
 import InfoGame from './InfoGame'
 import { Board } from '../models/Board'
 import { Player } from '../models/Player'
-import Modal from './Modal'
 
 function Game() {
-  const [showModal] = useState(true)
-  const inputRef = useRef() as MutableRefObject<HTMLInputElement>
   const isFirstMove = useRef(true)
   const [board, setBoard] = useState<Board | null>(null)
   const [whitePlayer] = useState<Player>(new Player('white'))
@@ -28,6 +25,10 @@ function Game() {
     const player = currentPlayer === whitePlayer ? blackPlayer : whitePlayer
     setCurrentPlayer(player)
   }
+
+  useEffect(() => {
+    restart()
+  }, [])
 
   useEffect(() => {
     if (currentPlayer?.color && !isFirstMove.current) board?.checkMate(currentPlayer.color)
@@ -50,13 +51,6 @@ function Game() {
         currentPlayer={currentPlayer}
         changePlayer={changePlayer}
       />
-
-      <Modal className={''} isShow={showModal}>
-        <input type="text" ref={inputRef} placeholder="Enter game id" />
-        <button className="btn" onClick={restart}>
-          Connect
-        </button>
-      </Modal>
     </div>
   )
 }
