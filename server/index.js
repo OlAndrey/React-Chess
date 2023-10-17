@@ -46,4 +46,11 @@ io.sockets.on('connection', (socket) => {
 
     socket.emit('created', { token: token })
   })
+
+  socket.on('check-token', (data) => {
+    const game = _games.get(data.token)
+
+    if (!game) socket.emit('token-invalid')
+    else socket.emit('token-ok')
+  })
 })
