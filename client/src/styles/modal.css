@@ -22,24 +22,13 @@
   }
 
   .modal input {
+    height: 1.35em;
     padding: 0.7rem 1rem;
     border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 0.9em;
   }
-
-  .btn {
-    display: inline-block;
-    padding: 0.8rem 1.4rem;
-    font-weight: 700;
-    background-color: black;
-    color: white;
-    border-radius: 5px;
-    text-align: center;
-    font-size: 1em;
-    cursor: pointer;
-  }
-
+  
   .btn-close{
     color: #aaa;
     line-height: 1em;
