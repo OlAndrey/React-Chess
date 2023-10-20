@@ -1,18 +1,12 @@
 import { MutableRefObject, useRef, useState } from 'react'
 import Modal from './Components/Modal'
 import socket from './helpers/socket'
+import CreateGame from './Components/CreateGame'
 
 const App = () => {
   const [showModal] = useState(true)
   const [isNewGame, setIsNewGame] = useState(false)
   const inputRef = useRef() as MutableRefObject<HTMLInputElement>
-
-  const data = [
-    { time: '5', name: 'Blitz' },
-    { time: '10', name: 'Rapid' },
-    { time: '30', name: 'Classical' },
-    { time: '-', name: 'Unlimit' }
-  ]
 
   const connect = () => {
     if (inputRef.current.value.trim()) {
@@ -21,11 +15,6 @@ const App = () => {
       socket.on('token-invalid', () => console.error('invalid'))
       socket.on('token-ok', () => console.log('token is ok'))
     }
-  }
-
-  const createGame = (option: (typeof data)[0]) => {
-    socket.emit('create-game', { time: option.time })
-    console.log(option)
   }
 
   return (
@@ -42,23 +31,7 @@ const App = () => {
           </button>
         </>
       ) : (
-        <>
-          <div className="flex">
-            <span className="text-lg">Please select game type!</span>
-            <button className="btn-close" onClick={() => setIsNewGame(false)}>
-              &times;
-            </button>
-          </div>
-
-          <div className="lpoll">
-            {data.map((item) => (
-              <div key={Math.random()} onClick={() => createGame(item)}>
-                <div className="clock">{item.time} min</div>
-                <div className="perf">{item.name}</div>
-              </div>
-            ))}
-          </div>
-        </>
+        <CreateGame handler={setIsNewGame} />
       )}
     </Modal>
   )
