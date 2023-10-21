@@ -1,22 +1,15 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter } from 'react-router-dom'
 import './styles/index.css'
 import reportWebVitals from './reportWebVitals'
 import App from './App'
-import Game from './Components/Game'
-import PlayerWaiting from './Components/PlayerWaiting'
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <Routes>
-        <Route path="/game/:token" Component={Game} />
-        <Route path="/:token" Component={PlayerWaiting} />
-        <Route path="/" Component={App} />
-        <Route path="/*" element={<Navigate to='/' replace={true} />} />
-      </Routes>
+      <App />
     </BrowserRouter>
   </React.StrictMode>
 )
