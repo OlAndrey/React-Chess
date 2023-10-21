@@ -5,6 +5,7 @@ import './styles/index.css'
 import reportWebVitals from './reportWebVitals'
 import App from './App'
 import Game from './Components/Game'
+import PlayerWaiting from './Components/PlayerWaiting'
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
@@ -12,6 +13,7 @@ root.render(
     <BrowserRouter>
       <Routes>
         <Route path="/game/:token" Component={Game} />
+        <Route path="/:token" Component={PlayerWaiting} />
         <Route path="/" Component={App} />
         <Route path="/*" element={<Navigate to='/' replace={true} />} />
       </Routes>

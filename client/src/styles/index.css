@@ -24,6 +24,25 @@ body {
       monospace;
   }
 
+  .bg-blue{
+    background-color: blue;
+  }
+  .bg-black {
+    background-color: black;
+  }
+  .bg-green{
+    background-color: darkgreen;
+  }
+
+  .w-full{
+    width: 100%;
+  }
+
+  .w-1\/2{
+    width: 50%;
+    margin: 0 auto;
+  }
+
   .flex{
     display: flex;
     justify-content: space-between;
