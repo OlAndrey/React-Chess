@@ -81,7 +81,7 @@ export class Board {
     kingPosition.capture = this.canCaptureKing(color)
   }
 
-  checkMate(color: 'white' | 'black') {
+  checkMate(color: 'white' | 'black'): string {
     const kingPosition = color === 'white' ? this.kingPositions[0] : this.kingPositions[1]
     const checkKing = kingPosition.capture
 
@@ -90,9 +90,11 @@ export class Board {
         row.some((cell) => cell.figure && cell.figure.possibleMoves.length > 0)
       )
     ) {
-      if (checkKing) alert(`${color === 'white' ? 'Black' : 'White'} is win!!`)
-      else alert('The game finished in a draw')
+      if (checkKing) return `${color === 'white' ? 'Black' : 'White'} is win!!`
+      else return 'The game finished in a draw'
     }
+
+    return ''
   }
 
   canCaptureKing(color: 'white' | 'black'): boolean {

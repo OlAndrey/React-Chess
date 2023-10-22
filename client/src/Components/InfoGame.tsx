@@ -8,9 +8,10 @@ interface IInfoGameProps {
   time: number
   player: Player | null
   handler: () => void
+  setMessage: (message: string) => void
 }
 
-const InfoGame: FC<IInfoGameProps> = ({ player, time, handler }) => {
+const InfoGame: FC<IInfoGameProps> = ({ player, time, handler, setMessage }) => {
   const [blackTime, setBlackTime] = useState(time)
   const [whiteTime, setWhiteTime] = useState(time)
   const timer = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -33,14 +34,15 @@ const InfoGame: FC<IInfoGameProps> = ({ player, time, handler }) => {
 
   useEffect(() => {
     if (whiteTime <= 0 && timer.current) {
-      alert('Black is win!!')
+      setMessage('Black is win!!')
       clearInterval(timer.current)
     }
 
     if (blackTime <= 0 && timer.current) {
-      alert('White is win!!')
+      setMessage('White is win!!')
       clearInterval(timer.current)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [whiteTime, blackTime])
 
   const restart = () => {

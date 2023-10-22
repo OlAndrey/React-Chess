@@ -9,14 +9,15 @@ const PlayerWaiting = () => {
   const navigate = useNavigate()
   const inputValues: string[] = [window.location.origin + '/game/' + token, token || 'null']
 
-    useEffect(() => {
-      if (token) socket.emit('check-token', { token })
-      socket.on('token-invalid', () => navigate('/'))
-      socket.on('ready', () => {
-        if (token) navigate('game/' + token, { replace: true })
-      })
+  useEffect(() => {
+    if (token) socket.emit('check-token', { token })
+    socket.on('token-invalid', () => navigate('/'))
+    socket.on('ready', () => {
+        console.log(token)
+      if (token) navigate('/game/' + token, { replace: true })
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [token])
+  }, [token])
 
   return (
     <Modal className={showModal ? 'bg-image' : ''} isShow={showModal}>
@@ -47,7 +48,7 @@ const CopyField = ({ value }: { value: string }) => {
   return (
     <div className="flex ">
       <input type="text" style={{ flexGrow: 1 }} value={value} readOnly />
-      <button className={`btn ${isClicked? 'bg-green' :'bg-blue'} p-2`} onClick={handlerClick}>
+      <button className={`btn ${isClicked ? 'bg-green' : 'bg-blue'} p-2`} onClick={handlerClick}>
         {isClicked ? checkSvg : copySvg}
       </button>
     </div>

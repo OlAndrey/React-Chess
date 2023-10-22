@@ -6,7 +6,7 @@ import { Cell } from '../models/Cell'
 import { Player } from '../models/Player'
 
 interface IBoardComponent {
-  board: Board | null
+  board: Board
   setBoard: (board: Board) => void
   currentPlayer: Player | null
   changePlayer: () => void
@@ -33,28 +33,17 @@ const BoardComponent: FC<IBoardComponent> = ({ board, setBoard, changePlayer, cu
   }
 
   return (
-    <>
-      {board ? (
-        <div className="board">
-          <BoardHeader>
-            {board.cells.map((row, index) => (
-              <React.Fragment key={index}>
-                {row.map((cell) => (
-                  <CellComponent
-                    key={cell.id}
-                    selected={selected}
-                    click={handlerClick}
-                    cell={cell}
-                  />
-                ))}
-              </React.Fragment>
+    <div className="board">
+      <BoardHeader>
+        {board.cells.map((row, index) => (
+          <React.Fragment key={index}>
+            {row.map((cell) => (
+              <CellComponent key={cell.id} selected={selected} click={handlerClick} cell={cell} />
             ))}
-          </BoardHeader>
-        </div>
-      ) : (
-        'Loading board...'
-      )}
-    </>
+          </React.Fragment>
+        ))}
+      </BoardHeader>
+    </div>
   )
 }
 

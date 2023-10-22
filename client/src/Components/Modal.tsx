@@ -3,11 +3,11 @@ import { FC, ReactNode } from "react"
 
 interface ModalPropsType {
     children: ReactNode
-    className: string
+    className?: string
     isShow: boolean
 }
 
-const Modal: FC<ModalPropsType> = ({ children, className, isShow}) => {
+const Modal: FC<ModalPropsType> = ({ children, className = '', isShow}) => {
   return (
     <div className={className}>
       <section className={classNames('modal', { hidden: !isShow })}>
