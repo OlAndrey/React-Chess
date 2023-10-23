@@ -4,12 +4,13 @@ const server = require('http').createServer()
 const Server = require('socket.io').Server
 const dotenv = require('dotenv')
 const Immutable = require('immutable')
+const { maybeEmit } = require('./src/utils/sendToOpponent')
 const Map = Immutable.Map
 const List = Immutable.List
 
 dotenv.config()
 
-const _games = Map()
+let _games = Map()
 
 const io = new Server(server, {
   cors: {
@@ -91,6 +92,12 @@ io.sockets.on('connection', (socket) => {
       )
     )
 
+    game.get('creator').emit('ready')
     socket.emit('joined', { color: color, time: game.get('gameTime') })
+  })
+
+  socket.on('new-move', (data) => {
+    const emissionData = { move: data.move, token: data.token, socket }
+    maybeEmit('move', _games, emissionData)
   })
 })
