@@ -1,15 +1,18 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import BoardComponent from './BoardComponent'
 import InfoGame from './InfoGame'
 import Modal from './Modal'
 import { Board } from '../models/Board'
 import { Player } from '../models/Player'
+import socket from '../helpers/socket'
 
 function Game() {
+  const { id } = useParams()
   const navigate = useNavigate()
   const isFirstMove = useRef(true)
+  const isJoinGame = useRef(false)
   const [message, setMessage] = useState('Loading')
   const [board, setBoard] = useState<Board | null>(null)
   const [whitePlayer] = useState<Player>(new Player('white'))
@@ -32,8 +35,18 @@ function Game() {
   }
 
   useEffect(() => {
-    restart()
-  }, [])
+    if (id && !isJoinGame.current) {
+      isJoinGame.current = true
+      setMessage('Loading...')
+      socket.emit('join', { token: id })
+      socket.on('room-full', () => setMessage('Room is full!'))
+      socket.on('token-invalid', () => setMessage('Invalid token!'))
+      socket.on('joined', () => {
+        restart()
+        setMessage('')
+      })
+    }
+  }, [id])
 
   useEffect(() => {
     if (currentPlayer?.color && !isFirstMove.current) {

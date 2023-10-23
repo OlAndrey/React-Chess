@@ -6,7 +6,7 @@ import ConnectGame from './Components/ConnectGame'
 const App = () => {
   return (
     <Routes>
-      <Route path="/game/:token" Component={Game} />
+      <Route path="/game/:id" Component={Game} />
       <Route path="/:token" Component={PlayerWaiting} />
       <Route path="/" Component={ConnectGame} />
       <Route path="/*" element={<Navigate to="/" replace={true} />} />
