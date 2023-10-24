@@ -1,17 +1,17 @@
 import { FC, useEffect, useRef, useState } from 'react'
 import classNames from 'classnames'
-import { Player } from '../models/Player'
 import whitePlayerIcon from '../Icons/White_King.svg'
 import blackPlayerIcon from '../Icons/Black_King.svg'
+import { PlayerColorType } from '../types/color'
 
 interface IInfoGameProps {
   time: number
-  player: Player | null
+  playerColor: PlayerColorType | null
   handler: () => void
   setMessage: (message: string) => void
 }
 
-const InfoGame: FC<IInfoGameProps> = ({ player, time, handler, setMessage }) => {
+const InfoGame: FC<IInfoGameProps> = ({ playerColor, time, handler, setMessage }) => {
   const [blackTime, setBlackTime] = useState(time)
   const [whiteTime, setWhiteTime] = useState(time)
   const timer = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -23,14 +23,14 @@ const InfoGame: FC<IInfoGameProps> = ({ player, time, handler, setMessage }) => 
   }
 
   const decrementTimer = () => {
-    if (player?.color === 'white') setWhiteTime((prev) => (prev > 0 ? prev - 1 : 0))
+    if (playerColor === 'white') setWhiteTime((prev) => (prev > 0 ? prev - 1 : 0))
     else setBlackTime((prev) => (prev > 0 ? prev - 1 : 0))
   }
 
   useEffect(() => {
-    if (player) startTimer()
+    if (playerColor) startTimer()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [player])
+  }, [playerColor])
 
   useEffect(() => {
     if (whiteTime <= 0 && timer.current) {
@@ -53,7 +53,7 @@ const InfoGame: FC<IInfoGameProps> = ({ player, time, handler, setMessage }) => 
 
   return (
     <div className="info">
-      <PlayerInfo color="black" isActive={player?.color === 'black'} time={blackTime} />
+      <PlayerInfo color="black" isActive={playerColor === 'black'} time={blackTime} />
 
       <div>
         <button className="button" onClick={restart}>
@@ -61,7 +61,7 @@ const InfoGame: FC<IInfoGameProps> = ({ player, time, handler, setMessage }) => 
         </button>
       </div>
 
-      <PlayerInfo color="white" isActive={player?.color === 'white'} time={whiteTime} />
+      <PlayerInfo color="white" isActive={playerColor === 'white'} time={whiteTime} />
     </div>
   )
 }

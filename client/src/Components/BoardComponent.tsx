@@ -3,20 +3,27 @@ import CellComponent from './CellComponent'
 import BoardHeader from './BoardHeader'
 import { Board } from '../models/Board'
 import { Cell } from '../models/Cell'
-import { Player } from '../models/Player'
+import { PlayerColorType } from '../types/color'
 
 interface IBoardComponent {
   board: Board
   setBoard: (board: Board) => void
-  currentPlayer: Player | null
-  moveHandler: (select: Cell, target: Cell) => void
+  meColor: 'white' | 'black' | null
+  currentPlayerColor: PlayerColorType | null
+  moveHandler: (cell: Cell, target: Cell) => void
 }
 
-const BoardComponent: FC<IBoardComponent> = ({ board, setBoard, currentPlayer, moveHandler }) => {
+const BoardComponent: FC<IBoardComponent> = ({
+  board,
+  setBoard,
+  moveHandler,
+  meColor,
+  currentPlayerColor
+}) => {
   const [selected, setSelected] = useState<Cell | null>(null)
 
   const handlerSelect = (cell: Cell) => {
-    if (board && cell.figure?.color === currentPlayer?.color) setSelected(cell)
+    if (board && cell.figure?.color === currentPlayerColor) setSelected(cell)
   }
 
   const handlerMove = (cell: Cell) => {
@@ -28,8 +35,12 @@ const BoardComponent: FC<IBoardComponent> = ({ board, setBoard, currentPlayer, m
   }
 
   const handlerClick = (cell: Cell) => {
-    if (!selected || (selected && cell.figure?.color === currentPlayer?.color)) handlerSelect(cell)
-    else handlerMove(cell)
+    console.log(meColor, currentPlayerColor, cell.figure)
+    if (meColor === currentPlayerColor) {
+      if (!selected || (selected && cell.figure?.color === currentPlayerColor))
+        handlerSelect(cell)
+      else handlerMove(cell)
+    }
   }
 
   return (

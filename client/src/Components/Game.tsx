@@ -5,9 +5,9 @@ import BoardComponent from './BoardComponent'
 import InfoGame from './InfoGame'
 import Modal from './Modal'
 import { Board } from '../models/Board'
-import { Player } from '../models/Player'
 import { Cell } from '../models/Cell'
 import socket from '../helpers/socket'
+import { PlayerColorType } from '../types/color'
 
 function Game() {
   const { id } = useParams()
@@ -16,13 +16,10 @@ function Game() {
   const isJoinGame = useRef(false)
   const [message, setMessage] = useState('Loading...')
   const [board, setBoard] = useState<Board | null>(null)
-  const [whitePlayer] = useState<Player>(new Player('white'))
-  const [blackPlayer] = useState<Player>(new Player('black'))
-  const [currentPlayer, setCurrentPlayer] = useState<Player | null>(null)
+  const [meColor, setMeColor] = useState<PlayerColorType | null>(null)
+  const [currentPlayerColor, setCurrentPlayerColor] = useState<PlayerColorType | null>(null)
 
   const restart = () => {
-    setMessage('')
-    setCurrentPlayer(whitePlayer)
     isFirstMove.current = true
     const newBoard = new Board()
     newBoard.fill()
@@ -31,8 +28,8 @@ function Game() {
   }
 
   const changePlayer = () => {
-    const player = currentPlayer === whitePlayer ? blackPlayer : whitePlayer
-    setCurrentPlayer(player)
+    const color = currentPlayerColor !== 'white' ? 'white' : 'black'
+    setCurrentPlayerColor(color)
   }
 
   const handlerMove = (cell: Cell, target: Cell) => {
@@ -54,16 +51,18 @@ function Game() {
       socket.emit('join', { token: id })
       socket.on('room-full', () => setMessage('Room is full!'))
       socket.on('token-invalid', () => setMessage('Invalid token!'))
-      socket.on('joined', () => {
+      socket.on('joined', (data: any) => {
         restart()
         setMessage('')
+        setMeColor(data.color)
+        setCurrentPlayerColor('white')
       })
     }
   }, [id])
 
   useEffect(() => {
-    if (currentPlayer?.color && !isFirstMove.current) {
-      const messageStr = board?.checkMate(currentPlayer.color)
+    if (currentPlayerColor && !isFirstMove.current) {
+      const messageStr = board?.checkMate(currentPlayerColor)
       if (messageStr) setMessage(messageStr)
     }
   }, [board])
@@ -71,22 +70,28 @@ function Game() {
   useEffect(() => {
     socket.off('move')
     socket.on('move', move)
-    if (board && currentPlayer?.color) {
+    if (board && currentPlayerColor) {
       if (isFirstMove.current) isFirstMove.current = false
-      board.calculateAllMoves(currentPlayer.color)
+      board.calculateAllMoves(currentPlayerColor)
       setBoard(board.copyBoard())
     }
-  }, [currentPlayer])
+  }, [currentPlayerColor])
 
   return (
     <div>
       {board ? (
         <div className="app">
-          <InfoGame player={currentPlayer} handler={restart} setMessage={setMessage} time={300} />
+          <InfoGame
+            playerColor={currentPlayerColor}
+            handler={restart}
+            setMessage={setMessage}
+            time={300}
+          />
           <BoardComponent
             board={board}
             setBoard={setBoard}
-            currentPlayer={currentPlayer}
+            meColor={meColor}
+            currentPlayerColor={currentPlayerColor}
             moveHandler={handlerMove}
           />
           {message && (
