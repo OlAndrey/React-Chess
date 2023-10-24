@@ -9,10 +9,10 @@ interface IBoardComponent {
   board: Board
   setBoard: (board: Board) => void
   currentPlayer: Player | null
-  changePlayer: () => void
+  moveHandler: (select: Cell, target: Cell) => void
 }
 
-const BoardComponent: FC<IBoardComponent> = ({ board, setBoard, changePlayer, currentPlayer }) => {
+const BoardComponent: FC<IBoardComponent> = ({ board, setBoard, currentPlayer, moveHandler }) => {
   const [selected, setSelected] = useState<Cell | null>(null)
 
   const handlerSelect = (cell: Cell) => {
@@ -21,7 +21,7 @@ const BoardComponent: FC<IBoardComponent> = ({ board, setBoard, changePlayer, cu
 
   const handlerMove = (cell: Cell) => {
     if (board && selected?.moveFigure(cell)) {
-      changePlayer()
+      moveHandler(selected, cell)
       setSelected(null)
       setBoard(board.copyBoard())
     }

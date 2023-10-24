@@ -6,6 +6,7 @@ import InfoGame from './InfoGame'
 import Modal from './Modal'
 import { Board } from '../models/Board'
 import { Player } from '../models/Player'
+import { Cell } from '../models/Cell'
 import socket from '../helpers/socket'
 
 function Game() {
@@ -13,7 +14,7 @@ function Game() {
   const navigate = useNavigate()
   const isFirstMove = useRef(true)
   const isJoinGame = useRef(false)
-  const [message, setMessage] = useState('Loading')
+  const [message, setMessage] = useState('Loading...')
   const [board, setBoard] = useState<Board | null>(null)
   const [whitePlayer] = useState<Player>(new Player('white'))
   const [blackPlayer] = useState<Player>(new Player('black'))
@@ -34,10 +35,22 @@ function Game() {
     setCurrentPlayer(player)
   }
 
+  const handlerMove = (cell: Cell, target: Cell) => {
+    const move = {
+      from: [cell.x, cell.y].join(''),
+      to: [target.x, target.y].join('')
+    }
+    socket.emit('new-move', { move, token: id })
+    changePlayer()
+  }
+
+  const move = (to: { from: string; to: string }) => {
+    if (board?.moveFigure(to)) changePlayer()
+  }
+
   useEffect(() => {
     if (id && !isJoinGame.current) {
       isJoinGame.current = true
-      setMessage('Loading...')
       socket.emit('join', { token: id })
       socket.on('room-full', () => setMessage('Room is full!'))
       socket.on('token-invalid', () => setMessage('Invalid token!'))
@@ -56,6 +69,8 @@ function Game() {
   }, [board])
 
   useEffect(() => {
+    socket.off('move')
+    socket.on('move', move)
     if (board && currentPlayer?.color) {
       if (isFirstMove.current) isFirstMove.current = false
       board.calculateAllMoves(currentPlayer.color)
@@ -72,7 +87,7 @@ function Game() {
             board={board}
             setBoard={setBoard}
             currentPlayer={currentPlayer}
-            changePlayer={changePlayer}
+            moveHandler={handlerMove}
           />
           {message && (
             <Modal isShow={true}>

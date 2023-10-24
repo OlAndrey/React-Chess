@@ -102,4 +102,28 @@ export class Board {
 
     return kingPosition.cellCapture(color)
   }
+  
+  moveFigure({ from, to }: { from: string; to: string }) {
+    const [fromX, fromY] = from.split('')
+    const [toX, toY] = to.split('')
+
+    const cell = this.getCell(+fromX, +fromY)
+    if (cell.figure) {
+      const target = this.getCell(+toX, +toY)
+      target.setFigure(cell.figure)
+      cell.figure = null
+      if (target.figure?.name === 'King') {
+        const index = target.figure?.color === 'white' ? 0 : 1
+        this.kingPositions[index] = target
+        if(Math.abs(target.y - cell.y) === 2){
+          const y = cell.y < target.y ? 7 : 0
+          const dy = cell.y < target.y ? 1 : -1
+          this.getCell(cell.x, y).moveFigure(this.getCell(cell.x, cell.y + dy))
+        }
+      }
+      return true
+    }
+
+    return false
+  }
 }
