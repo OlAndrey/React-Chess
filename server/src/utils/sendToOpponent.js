@@ -1,10 +1,10 @@
-const maybeEmit = (event, _games, emissionData) => {
-  const { data, token, socket } = emissionData
+const maybeEmit = (event, socket, _games, emissionData) => {
+  const { move, token } = emissionData
   if (!_games.has(token)) return
 
   const opponent = getOpponent(_games, token, socket)
   if (opponent) {
-    opponent.get('socket').emit(event, data)
+    opponent.get('socket').emit(event, move)
   }
 }
 

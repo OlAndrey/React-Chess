@@ -96,8 +96,5 @@ io.sockets.on('connection', (socket) => {
     socket.emit('joined', { color: color, time: game.get('gameTime') })
   })
 
-  socket.on('new-move', (data) => {
-    const emissionData = { move: data.move, token: data.token, socket }
-    maybeEmit('move', _games, emissionData)
-  })
+  socket.on('new-move', (data) => maybeEmit('move', socket, _games, data))
 })
