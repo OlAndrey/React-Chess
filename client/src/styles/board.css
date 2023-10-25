@@ -48,6 +48,12 @@
 
   .field > div {direction: ltr;}
 
+  .field-black, 
+  .field-black > div {
+    direction: rtl;
+    transform:rotate(180deg);
+  }
+
   .cell{
     width: 64px;
     height: 64px;

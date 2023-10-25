@@ -9,9 +9,10 @@ interface IInfoGameProps {
   playerColor: PlayerColorType | null
   handler: () => void
   setMessage: (message: string) => void
+  isReverse: boolean
 }
 
-const InfoGame: FC<IInfoGameProps> = ({ playerColor, time, handler, setMessage }) => {
+const InfoGame: FC<IInfoGameProps> = ({ playerColor, time, isReverse, handler, setMessage }) => {
   const [blackTime, setBlackTime] = useState(time)
   const [whiteTime, setWhiteTime] = useState(time)
   const timer = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -52,7 +53,10 @@ const InfoGame: FC<IInfoGameProps> = ({ playerColor, time, handler, setMessage }
   }
 
   return (
-    <div className="info">
+    <div 
+    className={classNames('info', {
+      reverse: isReverse
+    })}>
       <PlayerInfo color="black" isActive={playerColor === 'black'} time={blackTime} />
 
       <div>

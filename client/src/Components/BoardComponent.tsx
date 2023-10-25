@@ -45,7 +45,7 @@ const BoardComponent: FC<IBoardComponent> = ({
 
   return (
     <div className="board">
-      <BoardHeader>
+      <BoardHeader isReverse={meColor === 'black'}>
         {board.cells.map((row, index) => (
           <React.Fragment key={index}>
             {row.map((cell) => (

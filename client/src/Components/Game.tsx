@@ -84,6 +84,7 @@ function Game() {
           <InfoGame
             playerColor={currentPlayerColor}
             handler={restart}
+            isReverse={meColor === 'black'}
             setMessage={setMessage}
             time={300}
           />
