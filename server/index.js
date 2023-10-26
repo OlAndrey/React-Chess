@@ -5,6 +5,7 @@ const Server = require('socket.io').Server
 const dotenv = require('dotenv')
 const Immutable = require('immutable')
 const { maybeEmit } = require('./src/utils/sendToOpponent')
+const { runClock } = require('./src/utils/clock')
 const Map = Immutable.Map
 const List = Immutable.List
 
@@ -95,6 +96,8 @@ io.sockets.on('connection', (socket) => {
     game.get('creator').emit('ready')
     socket.emit('joined', { color: color, time: game.get('gameTime') })
   })
+
+  socket.on('clock-run', (data) => runClock(io, socket, _games, data))
 
   socket.on('new-move', (data) => maybeEmit('move', socket, _games, data))
 })
