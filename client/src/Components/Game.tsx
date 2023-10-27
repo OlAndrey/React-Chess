@@ -14,6 +14,7 @@ function Game() {
   const navigate = useNavigate()
   const isFirstMove = useRef(true)
   const isJoinGame = useRef(false)
+  const time = useRef(0)
   const [message, setMessage] = useState('Loading...')
   const [board, setBoard] = useState<Board | null>(null)
   const [meColor, setMeColor] = useState<PlayerColorType | null>(null)
@@ -27,8 +28,11 @@ function Game() {
     setBoard(newBoard)
   }
 
+  const runClock = (color: PlayerColorType) => ({ token: id, color })
+
   const changePlayer = () => {
     const color = currentPlayerColor !== 'white' ? 'white' : 'black'
+    socket.emit('clock-run', runClock(color))
     setCurrentPlayerColor(color)
   }
 
@@ -55,6 +59,8 @@ function Game() {
         restart()
         setMessage('')
         setMeColor(data.color)
+        time.current = data.time ? data.time : 0
+        if (data.color === 'white' && data.time) socket.emit('clock-run', runClock('white'))
         setCurrentPlayerColor('white')
       })
     }
@@ -83,10 +89,9 @@ function Game() {
         <div className="app">
           <InfoGame
             playerColor={currentPlayerColor}
-            handler={restart}
             isReverse={meColor === 'black'}
             setMessage={setMessage}
-            time={300}
+            time={time.current}
           />
           <BoardComponent
             board={board}

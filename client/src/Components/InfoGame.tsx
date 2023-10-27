@@ -3,68 +3,40 @@ import classNames from 'classnames'
 import whitePlayerIcon from '../Icons/White_King.svg'
 import blackPlayerIcon from '../Icons/Black_King.svg'
 import { PlayerColorType } from '../types/color'
+import socket from '../helpers/socket'
 
 interface IInfoGameProps {
   time: number
   playerColor: PlayerColorType | null
-  handler: () => void
   setMessage: (message: string) => void
   isReverse: boolean
 }
 
-const InfoGame: FC<IInfoGameProps> = ({ playerColor, time, isReverse, handler, setMessage }) => {
+const InfoGame: FC<IInfoGameProps> = ({ playerColor, time, isReverse, setMessage }) => {
+  const isJoinGame = useRef(false)
   const [blackTime, setBlackTime] = useState(time)
   const [whiteTime, setWhiteTime] = useState(time)
-  const timer = useRef<ReturnType<typeof setInterval> | null>(null)
-
-  const startTimer = () => {
-    if (timer.current) clearInterval(timer.current)
-
-    timer.current = setInterval(decrementTimer, 1000)
-  }
-
-  const decrementTimer = () => {
-    if (playerColor === 'white') setWhiteTime((prev) => (prev > 0 ? prev - 1 : 0))
-    else setBlackTime((prev) => (prev > 0 ? prev - 1 : 0))
-  }
 
   useEffect(() => {
-    if (playerColor) startTimer()
+    if (!isJoinGame.current) {
+      socket.on('countdown-gameover', (data: any) =>
+        setMessage(`${data.color === 'white' ? 'Black' : 'White'} is win!!`)
+      )
+      socket.on('countdown', (data: any) => {
+        if (data.color === 'white') setWhiteTime(data.time)
+        else setBlackTime(data.time)
+      })
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [playerColor])
-
-  useEffect(() => {
-    if (whiteTime <= 0 && timer.current) {
-      setMessage('Black is win!!')
-      clearInterval(timer.current)
-    }
-
-    if (blackTime <= 0 && timer.current) {
-      setMessage('White is win!!')
-      clearInterval(timer.current)
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [whiteTime, blackTime])
-
-  const restart = () => {
-    setWhiteTime(time)
-    setBlackTime(time)
-    handler()
-  }
+  }, [])
 
   return (
-    <div 
-    className={classNames('info', {
-      reverse: isReverse
-    })}>
+    <div
+      className={classNames('info', {
+        reverse: isReverse
+      })}
+    >
       <PlayerInfo color="black" isActive={playerColor === 'black'} time={blackTime} />
-
-      <div>
-        <button className="button" onClick={restart}>
-          Restart
-        </button>
-      </div>
-
       <PlayerInfo color="white" isActive={playerColor === 'white'} time={whiteTime} />
     </div>
   )
@@ -80,6 +52,7 @@ const PlayerInfo = ({
   time: number
 }) => {
   const formatingTime = (duration: number) => {
+    if (duration === 0) return '--:--'
     let ret = ''
     const mins = ~~(duration / 60)
     const secs = ~~duration % 60
