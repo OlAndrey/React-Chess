@@ -1,11 +1,31 @@
+const disconnect = (socket, _games) => {
+  const token = findToken(socket, _games)
+
+  if (!token) return _games
+
+  maybeEmit('opponent-disconnected', socket, _games, { token })
+  clearInterval(_games.getIn([token, 'interval']))
+  _games = _games.delete(token)
+
+  return _games
+}
+
 const maybeEmit = (event, socket, _games, emissionData) => {
-  const { move, token } = emissionData
+  const token  = emissionData.token
+  const move = emissionData.move || {}
+
   if (!_games.has(token)) return
 
   const opponent = getOpponent(_games, token, socket)
   if (opponent) {
     opponent.get('socket').emit(event, move)
   }
+}
+
+const findToken = (socket, _games) => {
+  return _games.findKey((game, token) =>
+    game.get('players').some((player) => player.get('socket') === socket)
+  )
 }
 
 const getOpponent = (_games, token, socket) => {
@@ -24,4 +44,4 @@ const getOpponent = (_games, token, socket) => {
   }
 }
 
-module.exports = { getOpponent, maybeEmit }
+module.exports = { disconnect, maybeEmit }

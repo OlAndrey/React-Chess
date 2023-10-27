@@ -4,7 +4,7 @@ const server = require('http').createServer()
 const Server = require('socket.io').Server
 const dotenv = require('dotenv')
 const Immutable = require('immutable')
-const { maybeEmit } = require('./src/utils/sendToOpponent')
+const { maybeEmit, disconnect } = require('./src/utils/sendToOpponent')
 const { runClock } = require('./src/utils/clock')
 const Map = Immutable.Map
 const List = Immutable.List
@@ -103,6 +103,10 @@ io.sockets.on('connection', (socket) => {
 
 
   socket.on('new-move', (data) => maybeEmit('move', socket, _games, data))
+
+  socket.on('disconnect', () => {
+    _games = disconnect(socket, _games)
+  })
 })
 
 function updateTime(token, playerIdx) {
