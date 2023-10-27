@@ -1,19 +1,16 @@
-const runClock = (io, socket, _games, dataClock) => {
+const runClock = (io, socket, _games, updateGame, dataClock) => {
   const { color, token } = dataClock
-  if (!_games.has(token)) return
+  if (!_games.has(token)) return _games
 
   _games.getIn([token, 'players']).forEach((player, idx) => {
     if (player.get('socket') === socket && player.get('color') === color) {
+      console.log('clock-run')
       clearInterval(_games.getIn([token, 'interval']))
 
       _games = _games.setIn(
         [token, 'interval'],
         setInterval(() => {
-          let timeLeft = 0
-          _games = _games.updateIn([token, 'players', idx, 'time'], (time) => {
-            timeLeft = time - 1
-            return time - 1
-          })
+          const timeLeft = updateGame(token, idx)
 
           if (timeLeft >= 0) {
             io.to(token).emit('countdown', {
@@ -32,6 +29,8 @@ const runClock = (io, socket, _games, dataClock) => {
       return false
     }
   })
+
+  return _games
 }
 
 module.exports = { runClock }

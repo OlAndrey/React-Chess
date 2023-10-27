@@ -97,7 +97,21 @@ io.sockets.on('connection', (socket) => {
     socket.emit('joined', { color: color, time: game.get('gameTime') })
   })
 
-  socket.on('clock-run', (data) => runClock(io, socket, _games, data))
+  socket.on('clock-run', (data) => {
+    _games = runClock(io, socket, _games, updateTime, data)
+  })
+
 
   socket.on('new-move', (data) => maybeEmit('move', socket, _games, data))
 })
+
+function updateTime(token, playerIdx) {
+  let timeLeft = 0
+
+  _games = _games.updateIn([token, 'players', playerIdx, 'time'], (time) => {
+    timeLeft = time - 1
+    return time - 1
+  })
+
+  return timeLeft
+}
