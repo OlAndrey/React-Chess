@@ -2,7 +2,7 @@ import { FC, useEffect, useRef, useState } from 'react'
 import classNames from 'classnames'
 import whitePlayerIcon from '../Icons/White_King.svg'
 import blackPlayerIcon from '../Icons/Black_King.svg'
-import { PlayerColorType } from '../types/color'
+import { PlayerColorType } from '../types/game'
 import socket from '../helpers/socket'
 
 interface IInfoGameProps {

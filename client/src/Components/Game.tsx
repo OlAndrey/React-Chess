@@ -1,21 +1,24 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useRef, useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { FC, useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import BoardComponent from './BoardComponent'
 import InfoGame from './InfoGame'
 import Modal from './Modal'
 import { Board } from '../models/Board'
 import { Cell } from '../models/Cell'
 import socket from '../helpers/socket'
-import { PlayerColorType } from '../types/color'
+import { GameDataType, PlayerColorType } from '../types/game'
 
-function Game() {
-  const { id } = useParams()
+interface GamePropsType {
+  message: string
+  setMessage: (message: string) => void
+  gameData: GameDataType | null
+}
+
+const Game: FC<GamePropsType> = ({ gameData, message, setMessage }) => {
   const navigate = useNavigate()
   const isFirstMove = useRef(true)
-  const isJoinGame = useRef(false)
   const time = useRef(0)
-  const [message, setMessage] = useState('Loading...')
   const [board, setBoard] = useState<Board | null>(null)
   const [meColor, setMeColor] = useState<PlayerColorType | null>(null)
   const [currentPlayerColor, setCurrentPlayerColor] = useState<PlayerColorType | null>(null)
@@ -28,7 +31,7 @@ function Game() {
     setBoard(newBoard)
   }
 
-  const runClock = (color: PlayerColorType) => ({ token: id, color })
+  const runClock = (color: PlayerColorType) => ({ token: gameData?.token, color })
 
   const changePlayer = () => {
     const color = currentPlayerColor !== 'white' ? 'white' : 'black'
@@ -41,7 +44,7 @@ function Game() {
       from: [cell.x, cell.y].join(''),
       to: [target.x, target.y].join('')
     }
-    socket.emit('new-move', { move, token: id })
+    socket.emit('new-move', { move, token: gameData?.token })
     changePlayer()
   }
 
@@ -50,21 +53,14 @@ function Game() {
   }
 
   useEffect(() => {
-    if (id && !isJoinGame.current) {
-      isJoinGame.current = true
-      socket.emit('join', { token: id })
-      socket.on('room-full', () => setMessage('Room is full!'))
-      socket.on('token-invalid', () => setMessage('Invalid token!'))
-      socket.on('joined', (data: any) => {
-        restart()
-        setMessage('')
-        setMeColor(data.color)
-        time.current = data.time ? data.time : 0
-        if (data.color === 'white' && data.time) socket.emit('clock-run', runClock('white'))
-        setCurrentPlayerColor('white')
-      })
+    if (gameData) {
+      restart()
+      setMessage('')
+      setMeColor(gameData.color)
+      time.current = gameData.time ? gameData.time : 0
+      if (gameData.color === 'white' && gameData.time) socket.emit('clock-run', runClock('white'))
     }
-  }, [id])
+  }, [gameData])
 
   useEffect(() => {
     if (currentPlayerColor && !isFirstMove.current) {

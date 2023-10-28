@@ -3,7 +3,7 @@ import CellComponent from './CellComponent'
 import BoardHeader from './BoardHeader'
 import { Board } from '../models/Board'
 import { Cell } from '../models/Cell'
-import { PlayerColorType } from '../types/color'
+import { PlayerColorType } from '../types/game'
 
 interface IBoardComponent {
   board: Board
@@ -35,7 +35,6 @@ const BoardComponent: FC<IBoardComponent> = ({
   }
 
   const handlerClick = (cell: Cell) => {
-    console.log(meColor, currentPlayerColor, cell.figure)
     if (meColor === currentPlayerColor) {
       if (!selected || (selected && cell.figure?.color === currentPlayerColor))
         handlerSelect(cell)
