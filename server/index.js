@@ -4,7 +4,7 @@ const server = require('http').createServer()
 const Server = require('socket.io').Server
 const dotenv = require('dotenv')
 const Immutable = require('immutable')
-const { maybeEmit, disconnect } = require('./src/utils/sendToOpponent')
+const { maybeEmit } = require('./src/utils/sendToOpponent')
 const { runClock } = require('./src/utils/clock')
 const Map = Immutable.Map
 const List = Immutable.List
@@ -97,10 +97,33 @@ io.sockets.on('connection', (socket) => {
     socket.emit('joined', { color: color, time: game.get('gameTime') })
   })
 
+  socket.on('rematch-offer', (data) => maybeEmit('rematch-offered', socket, _games, data))
+
+  socket.on('rematch-decline', (data) => maybeEmit('rematch-declined', socket, _games, data))
+
+  socket.on('rematch-accept', (data) => {
+    if (!_games.has(data.token)) return
+
+    const game = _games.get(data.token)
+
+    _games = _games.updateIn([data.token, 'players'], (players) =>
+      players.map((player) =>
+        player
+          .set('time', game.get('gameTime'))
+          .update('color', (color) => (color === 'black' ? 'white' : 'black'))
+      )
+    )
+
+    io.to(data.token).emit('rematch-accepted')
+  })
+
+  socket.on('game-over', (data) => clearInterval(_games.getIn([data.token, 'interval'])))
+
   socket.on('clock-run', (data) => {
     _games = runClock(io, socket, _games, updateTime, data)
   })
 
+  socket.on('clock-pause', (data) => clearInterval(_games.getIn([data.token, 'interval'])))
 
   socket.on('new-move', (data) => maybeEmit('move', socket, _games, data))
 
