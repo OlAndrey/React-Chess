@@ -8,14 +8,20 @@ import socket from '../helpers/socket'
 interface IInfoGameProps {
   time: number
   playerColor: PlayerColorType | null
+  handler: () => void
   setMessage: (message: string) => void
   isReverse: boolean
 }
 
-const InfoGame: FC<IInfoGameProps> = ({ playerColor, time, isReverse, setMessage }) => {
+const InfoGame: FC<IInfoGameProps> = ({ playerColor, time, isReverse, handler, setMessage }) => {
   const isJoinGame = useRef(false)
   const [blackTime, setBlackTime] = useState(time)
   const [whiteTime, setWhiteTime] = useState(time)
+
+  useEffect(() => {
+    setWhiteTime(time)
+    setBlackTime(time)
+  }, [time])
 
   useEffect(() => {
     if (!isJoinGame.current) {
@@ -37,6 +43,13 @@ const InfoGame: FC<IInfoGameProps> = ({ playerColor, time, isReverse, setMessage
       })}
     >
       <PlayerInfo color="black" isActive={playerColor === 'black'} time={blackTime} />
+
+      <div>
+        <button className="button" onClick={handler}>
+          Restart
+        </button>
+      </div>
+
       <PlayerInfo color="white" isActive={playerColor === 'white'} time={whiteTime} />
     </div>
   )

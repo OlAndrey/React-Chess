@@ -25,6 +25,14 @@ const GameContainer = () => {
           time: data.time
         })
       })
+      socket.on('rematch-offered', () => setMessage('Opponent offers to restart the game..'))
+      socket.on('rematch-declined', () => setMessage(''))
+      socket.on('rematch-accepted', () => {
+        setGameData((prev) => {
+          if (!prev) return prev
+          return { ...prev, color: prev.color === 'white' ? 'black' : 'white' }
+        })
+      })
       socket.on('opponent-disconnected', () => setMessage('Opponent disconnected from the game'))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

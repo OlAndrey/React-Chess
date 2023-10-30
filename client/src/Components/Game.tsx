@@ -18,16 +18,26 @@ interface GamePropsType {
 const Game: FC<GamePropsType> = ({ gameData, message, setMessage }) => {
   const navigate = useNavigate()
   const isFirstMove = useRef(true)
+  const isGameOn = useRef(false)
   const time = useRef(0)
   const [board, setBoard] = useState<Board | null>(null)
   const [meColor, setMeColor] = useState<PlayerColorType | null>(null)
   const [currentPlayerColor, setCurrentPlayerColor] = useState<PlayerColorType | null>(null)
 
   const restart = () => {
+    setMessage('Waiting for your opponent\'s answer')
+    isGameOn.current = false
+    socket.emit('clock-pause', { token: gameData?.token })
+    socket.emit('rematch-offer', { token: gameData?.token })
+  }
+
+  const start = () => {
     isFirstMove.current = true
     const newBoard = new Board()
     newBoard.fill()
     newBoard.getFigures()
+    newBoard.calculateAllMoves('white')
+    setCurrentPlayerColor('white')
     setBoard(newBoard)
   }
 
@@ -52,11 +62,17 @@ const Game: FC<GamePropsType> = ({ gameData, message, setMessage }) => {
     if (board?.moveFigure(to)) changePlayer()
   }
 
+  const gameOver = (message: string) => {
+    setMessage(message)
+    isGameOn.current = false
+  }
+
   useEffect(() => {
     if (gameData) {
-      restart()
+      start()
       setMessage('')
       setMeColor(gameData.color)
+      isGameOn.current = true
       time.current = gameData.time ? gameData.time : 0
       if (gameData.color === 'white' && gameData.time) socket.emit('clock-run', runClock('white'))
     }
@@ -65,7 +81,7 @@ const Game: FC<GamePropsType> = ({ gameData, message, setMessage }) => {
   useEffect(() => {
     if (currentPlayerColor && !isFirstMove.current) {
       const messageStr = board?.checkMate(currentPlayerColor)
-      if (messageStr) setMessage(messageStr)
+      if (messageStr) gameOver(messageStr)
     }
   }, [board])
 
@@ -86,7 +102,8 @@ const Game: FC<GamePropsType> = ({ gameData, message, setMessage }) => {
           <InfoGame
             playerColor={currentPlayerColor}
             isReverse={meColor === 'black'}
-            setMessage={setMessage}
+            setMessage={gameOver}
+            handler={restart}
             time={time.current}
           />
           <BoardComponent
@@ -99,9 +116,30 @@ const Game: FC<GamePropsType> = ({ gameData, message, setMessage }) => {
           {message && (
             <Modal isShow={true}>
               <h1 className="text-center">{message}</h1>
-              <button className="btn bg-black" onClick={() => navigate('/', { replace: true })}>
-                Go Home
-              </button>
+              {!isGameOn.current ? (
+                <button className="btn bg-black" onClick={() => navigate('/', { replace: true })}>
+                  Go Home
+                </button>
+              ) : (
+                <div className="flex">
+                  <button
+                    className="btn bg-green"
+                    onClick={() => socket.emit('rematch-accept', { token: gameData?.token })}
+                  >
+                    Yes
+                  </button>
+                  <button
+                    className="btn bg-black"
+                    onClick={() => {
+                      socket.emit('clock-run', runClock(currentPlayerColor || 'white'))
+                      socket.emit('rematch-decline', { token: gameData?.token })
+                      setMessage('')
+                    }}
+                  >
+                    No
+                  </button>
+                </div>
+              )}
             </Modal>
           )}
         </div>
