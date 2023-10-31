@@ -83,3 +83,34 @@ body {
     margin-top: 1em;
     margin-bottom: 1em;
   }
+
+#info{
+  display: none;
+}
+#main{
+  display: block;
+}
+
+@media all and (orientation:portrait) {
+  #info {
+    width: 100vw;
+    height: 100vh;
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    color: rgba(255, 255, 255, 1);
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(5px);
+    z-index: 1001;
+  }
+  #info h1{
+    font-size: 3em;
+    font-weight: 800;
+  }
+}

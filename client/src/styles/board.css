@@ -1,7 +1,7 @@
 .board{
     position: relative;
-    width: calc(64px * 8 + 65px);
-    height: calc(64px * 8 + 65px);
+    width: calc(2.5em * 8 + 65px);
+    height: calc(2.5em * 8 + 65px);
     /* margin: 2em auto; */
     border: 2px solid rgb(130, 90, 88);
     background-color: rgb(221, 176, 121);
@@ -21,7 +21,7 @@
   }
   .coord-aside{
     width: 30px;
-    height: calc(64px * 8);
+    height: calc(2.5em * 8);
     padding: 0 .5px;
     flex-direction: column-reverse;
   }
@@ -37,8 +37,8 @@
 
   .field{
     flex: 80% 1 1;
-    width: calc(64px * 8);
-    height: calc(64px * 8);
+    width: calc(2.5em * 8);
+    height: calc(2.5em * 8);
     border: 2px solid rgb(130, 90, 88);
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
@@ -55,8 +55,8 @@
   }
 
   .cell{
-    width: 64px;
-    height: 64px;
+    width: 2.5em;
+    height: 2.5em;
   }
 
   .cell-black{
@@ -74,7 +74,7 @@
   .cell-available div:not(.figure){
     width: 14px;
     height: 14px;
-    margin: 25px auto;
+    margin: 1em auto;
     border-radius: 50%;
     background-color: green;
   }
@@ -87,6 +87,24 @@
     box-shadow: inset 0px 0px 0px 3px red;
   }
 
-  .figure{
-    padding: 7.5px;
+  .figure img{
+    width: 2.5em;
+    height: auto;
   }
+
+  @media screen and (max-width: 768px) {
+    .board{
+      width: calc(2.5em * 8 + 5px);
+      height: calc(2.5em * 8 + 2.5px);
+    }
+
+    .coord-top,
+    .coord-aside,
+    .coord-bottom{
+      display: none;
+    }
+    .figure{
+      padding: 0;
+    }
+  }
+  

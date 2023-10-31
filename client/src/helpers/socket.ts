@@ -1,3 +1,3 @@
 import io from 'socket.io-client'
 
-export default io('localhost:5000')
+export default io(process.env.REACT_APP_WS_URL)
