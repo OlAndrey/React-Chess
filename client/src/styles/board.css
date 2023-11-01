@@ -92,6 +92,32 @@
     height: auto;
   }
 
+  .promotion {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    grid-gap: 9px;
+}
+.promotion>div {
+    flex: 45% 1 1;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border: 1px solid #404040;
+    border-radius: 3px;
+    color: #161512;
+    transition: all 150ms;
+}
+.promotion .figure-name{
+    display: block;
+    font-size: 1.35em;
+    line-height: 1.5em;
+    letter-spacing: .1em;
+}
+
   @media screen and (max-width: 768px) {
     .board{
       width: calc(2.5em * 8 + 5px);

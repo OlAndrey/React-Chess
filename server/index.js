@@ -4,7 +4,7 @@ const server = require('http').createServer()
 const Server = require('socket.io').Server
 const dotenv = require('dotenv')
 const Immutable = require('immutable')
-const { maybeEmit } = require('./src/utils/sendToOpponent')
+const { disconnect, maybeEmit } = require('./src/utils/sendToOpponent')
 const { runClock } = require('./src/utils/clock')
 const Map = Immutable.Map
 const List = Immutable.List
@@ -14,6 +14,7 @@ dotenv.config()
 let _games = Map()
 
 const io = new Server(server, {
+  pingTimeout: 60000,
   cors: {
     origin: process.env.FRONT_END_HOST,
     methods: ['GET', 'POST']

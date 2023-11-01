@@ -8,6 +8,7 @@ import { Board } from '../models/Board'
 import { Cell } from '../models/Cell'
 import socket from '../helpers/socket'
 import { GameDataType, PlayerColorType } from '../types/game'
+import { FigureNames } from '../models/figures/Figure'
 
 interface GamePropsType {
   message: string
@@ -25,7 +26,7 @@ const Game: FC<GamePropsType> = ({ gameData, message, setMessage }) => {
   const [currentPlayerColor, setCurrentPlayerColor] = useState<PlayerColorType | null>(null)
 
   const restart = () => {
-    setMessage('Waiting for your opponent\'s answer')
+    setMessage("Waiting for your opponent's answer")
     isGameOn.current = false
     socket.emit('clock-pause', { token: gameData?.token })
     socket.emit('rematch-offer', { token: gameData?.token })
@@ -52,13 +53,14 @@ const Game: FC<GamePropsType> = ({ gameData, message, setMessage }) => {
   const handlerMove = (cell: Cell, target: Cell) => {
     const move = {
       from: [cell.x, cell.y].join(''),
-      to: [target.x, target.y].join('')
+      to: [target.x, target.y].join(''),
+      figureName: target.figure?.name
     }
     socket.emit('new-move', { move, token: gameData?.token })
     changePlayer()
   }
 
-  const move = (to: { from: string; to: string }) => {
+  const move = (to: { from: string; to: string; figureName: FigureNames }) => {
     if (board?.moveFigure(to)) changePlayer()
   }
 

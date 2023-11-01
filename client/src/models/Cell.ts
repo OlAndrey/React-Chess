@@ -1,5 +1,9 @@
 import { Board } from './Board'
+import { Bishop } from './figures/Bishop'
 import { Figure, FigureNames } from './figures/Figure'
+import { Knight } from './figures/Knight'
+import { Queen } from './figures/Queen'
+import { Rook } from './figures/Rook'
 
 export class Cell {
   board: Board
@@ -73,6 +77,29 @@ export class Cell {
     }
 
     return false
+  }
+
+  promotionFigure(name: FigureNames, color: 'white' | 'black') {
+    switch (name) {
+      case FigureNames.QUEEN:
+        this.figure = new Queen(this, color)
+        break
+
+      case FigureNames.BISHOP:
+        this.figure = new Bishop(this, color)
+        break
+
+      case FigureNames.KNIGHT:
+        this.figure = new Knight(this, color)
+        break
+
+      case FigureNames.ROOK:
+        this.figure = new Rook(this, color)
+        break
+
+      default:
+        break
+    }
   }
 
   setFigure(figure: Figure) {

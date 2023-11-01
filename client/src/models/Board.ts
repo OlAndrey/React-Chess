@@ -1,5 +1,6 @@
 import { Cell } from './Cell'
 import { Bishop } from './figures/Bishop'
+import { FigureNames } from './figures/Figure'
 import { King } from './figures/King'
 import { Knight } from './figures/Knight'
 import { Pawn } from './figures/Pawn'
@@ -102,8 +103,8 @@ export class Board {
 
     return kingPosition.cellCapture(color)
   }
-  
-  moveFigure({ from, to }: { from: string; to: string }) {
+
+  moveFigure({ from, to, figureName }: { from: string; to: string; figureName: FigureNames }) {
     const [fromX, fromY] = from.split('')
     const [toX, toY] = to.split('')
 
@@ -115,12 +116,16 @@ export class Board {
       if (target.figure?.name === 'King') {
         const index = target.figure?.color === 'white' ? 0 : 1
         this.kingPositions[index] = target
-        if(Math.abs(target.y - cell.y) === 2){
+        if (Math.abs(target.y - cell.y) === 2) {
           const y = cell.y < target.y ? 7 : 0
           const dy = cell.y < target.y ? 1 : -1
           this.getCell(cell.x, y).moveFigure(this.getCell(cell.x, cell.y + dy))
         }
       }
+
+      if (target.figure && target.figure.name !== figureName)
+        target.promotionFigure(figureName, target.figure.color)
+
       return true
     }
 
