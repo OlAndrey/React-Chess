@@ -1,11 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import BoardComponent from './Components/BoardComponent'
 import InfoGame from './Components/InfoGame'
 import { Board } from './models/Board'
 import { Player } from './models/Player'
 
 function App() {
+  const isFirstMove = useRef(true)
   const [board, setBoard] = useState<Board | null>(null)
   const [whitePlayer] = useState<Player>(new Player('white'))
   const [blackPlayer] = useState<Player>(new Player('black'))
@@ -13,6 +14,7 @@ function App() {
 
   const restart = () => {
     setCurrentPlayer(whitePlayer)
+    isFirstMove.current = true
     const newBoard = new Board()
     newBoard.fill()
     newBoard.getFigures()
@@ -29,7 +31,12 @@ function App() {
   }, [])
 
   useEffect(() => {
+    if (currentPlayer?.color && !isFirstMove.current) board?.checkMate(currentPlayer.color)
+  }, [board])
+
+  useEffect(() => {
     if (board && currentPlayer?.color) {
+      if (isFirstMove.current) isFirstMove.current = false
       board.calculateAllMoves(currentPlayer.color)
       setBoard(board.copyBoard())
     }

@@ -77,10 +77,22 @@ export class Board {
       }
     }
 
-    const checkKing = this.canCaptureKing(color)
-
     const kingPosition = color === 'white' ? this.kingPositions[0] : this.kingPositions[1]
-    kingPosition.capture = checkKing
+    kingPosition.capture = this.canCaptureKing(color)
+  }
+
+  checkMate(color: 'white' | 'black') {
+    const kingPosition = color === 'white' ? this.kingPositions[0] : this.kingPositions[1]
+    const checkKing = kingPosition.capture
+
+    if (
+      !this.cells.some((row) =>
+        row.some((cell) => cell.figure && cell.figure.possibleMoves.length > 0)
+      )
+    ) {
+      if (checkKing) alert(`${color === 'white' ? 'Black' : 'White'} is win!!`)
+      else alert('The game finished in a draw')
+    }
   }
 
   canCaptureKing(color: 'white' | 'black'): boolean {
