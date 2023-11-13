@@ -43,12 +43,18 @@ const InfoGame: FC<IInfoGameProps> = ({ player, time, handler }) => {
     }
   }, [whiteTime, blackTime])
 
+  const restart = () => {
+    setWhiteTime(time)
+    setBlackTime(time)
+    handler()
+  }
+
   return (
     <div className="info">
       <PlayerInfo color="black" isActive={player?.color === 'black'} time={blackTime} />
 
       <div>
-        <button className="button" onClick={handler}>
+        <button className="button" onClick={restart}>
           Restart
         </button>
       </div>
